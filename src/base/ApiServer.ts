@@ -2,6 +2,7 @@ import express from "express"
 import { Controller } from "./Controller"
 import session from "express-session"
 import cookieParser from "cookie-parser"
+import cors from "cors-ts"
 
 export class ApiServer {
   private app = express()
@@ -18,6 +19,7 @@ export class ApiServer {
       }),
     )
     this.app.use(cookieParser())
+    this.app.use(cors())
   }
 
   protected registerController(controller: Controller) {
