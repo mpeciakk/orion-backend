@@ -1,10 +1,10 @@
 import { ApiServer } from "./base/ApiServer"
-import { TestController } from "./controllers/test.controller"
+import { AuthController } from "./controllers/auth.controller"
 
 export class Server extends ApiServer {
   constructor() {
     super()
 
-    this.registerController(new TestController())
+    this.registerController(new AuthController())
   }
 }

@@ -13,7 +13,7 @@ const response = (message: string, status: number, payload?: Record<string, any>
   return {
     message,
     status,
-    payload
+    payload,
   }
 }
 
@@ -31,13 +31,13 @@ export abstract class Controller {
   }
 
   protected get(path: string, callback: RequestCallback, ...middlewares: Middleware[]): void {
-    this.app.get(path, ...middlewares.map(middleware => middleware.apply.bind(middleware)), async (req, res) => {
+    this.app.get(path, ...middlewares.map((middleware) => middleware.apply.bind(middleware)), async (req, res) => {
       res.send(await callback(req.params, req, res))
     })
   }
 
   protected post(path: string, callback: RequestCallback, ...middlewares: Middleware[]): void {
-    this.app.post(path, ...middlewares.map(middleware => middleware.apply.bind(middleware)), async (req, res) => {
+    this.app.post(path, ...middlewares.map((middleware) => middleware.apply.bind(middleware)), async (req, res) => {
       res.send(await callback(req.body, req, res))
     })
   }

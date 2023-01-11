@@ -1,5 +1,7 @@
 import express from "express"
 import { Controller } from "./Controller"
+import session from "express-session"
+import cookieParser from "cookie-parser"
 
 export class ApiServer {
   private app = express()
@@ -7,6 +9,15 @@ export class ApiServer {
 
   constructor() {
     this.app.use(express.json())
+    this.app.use(
+      session({
+        secret: process.env.SESSION_SECRET!,
+        saveUninitialized: true,
+        cookie: { maxAge: /* one day */ 1000 * 60 * 60 * 24 },
+        resave: false,
+      }),
+    )
+    this.app.use(cookieParser())
   }
 
   protected registerController(controller: Controller) {
