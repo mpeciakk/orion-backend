@@ -3,8 +3,8 @@ import { Controller, success, fail, ResponseType } from "../base/Controller"
 import { Validator } from "../base/Validator"
 import { prisma } from "../database/database"
 import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
 import { AuthMiddleware } from "../middlewares/auth.middleware"
+import { Request, Response } from "express"
 
 class LoginValidator extends Validator {
   validate() {
@@ -23,6 +23,7 @@ export class AuthController extends Controller {
     this.post("/auth/login", this.login, new LoginValidator())
     this.post("/auth/register", this.register, new RegisterValidator())
     this.get("/auth/test", this.test, new AuthMiddleware())
+    this.get("/auth/logout", this.logout)
   }
 
   async login(payload: any, req: Request, res: Response): Promise<ResponseType> {
@@ -40,22 +41,16 @@ export class AuthController extends Controller {
       return fail("Invalid password", 401)
     }
 
-    const token = jwt.sign(
-      {
-        sub: user.id,
-      },
-      process.env.JWT_SECRET!,
-      {
-        expiresIn: 86400,
-      },
-    )
+    req.session.user = {
+      id: user.id,
+      username: username,
+    }
 
     return success("User logged in successfully", 200, {
       user: {
         id: user.id,
         username: username,
       },
-      accessToken: token,
     })
   }
 
@@ -76,6 +71,12 @@ export class AuthController extends Controller {
     })
 
     return success("User registered successfully")
+  }
+
+  async logout(payload: any, req: Request, res: Response): Promise<ResponseType> {
+    req.session.destroy(() => {})
+
+    return success("Log out successfully!")
   }
 
   async test(payload: any, req: Request, res: Response): Promise<ResponseType> {

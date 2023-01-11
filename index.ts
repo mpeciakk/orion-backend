@@ -1,6 +1,4 @@
 import { config } from "dotenv"
-
-import express from "express"
 import { Server } from "./src/server"
 
 config()
